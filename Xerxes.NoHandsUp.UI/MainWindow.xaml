@@ -1,0 +1,15 @@
+﻿<Window x:Class="Xerxes.NoHandsUp.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Xerxes.NoHandsUp.UI"
+        xmlns:localresources="clr-namespace:Xerxes.NoHandsUp.UI.Properties"
+        xmlns:coreView="clr-namespace:MVVm.Core.View;assembly=MVVm.Core"
+        Title="{x:Static localresources:Resources.WindowTitle}" WindowState="Maximized" Icon="/Xerxes.NoHandsUp.UI;component/people.ico">
+    
+    <DockPanel>
+      <local:ClassSelection DockPanel.Dock="Top"/>
+        <Viewbox>
+            <local:PupilSelection DockPanel.Dock="Bottom"/>
+        </Viewbox>
+    </DockPanel>
+</Window>

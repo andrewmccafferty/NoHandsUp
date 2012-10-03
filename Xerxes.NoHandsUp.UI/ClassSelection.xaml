@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Xerxes.NoHandsUp.UI.ClassSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:localresources="clr-namespace:Xerxes.NoHandsUp.UI.Properties"
+             xmlns:localproperties="clr-namespace:Xerxes.NoHandsUp.UI.Properties"
+             xmlns:sharedconverters="clr-namespace:Xerxes.WPFCustomControls.Converters;assembly=Xerxes.WPFCustomControls">
+    <UserControl.Resources>
+        <sharedconverters:VisibleIfEnabledConverter x:Key="VisibleIfEnabledConverter"/>
+        <Style TargetType="Label" x:Key="ClassHeader">
+            <Setter Property="Content" Value="{Binding CurrentClass.Name}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentClass.Name}" Value="{x:Null}">
+                    <Setter Property="Content" Value="{x:Static localresources:Resources.PleaseSelectClass}"/>
+                    <Setter Property="FontStyle" Value="Italic"/>
+                    <Setter Property="FontWeight" Value="Normal"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+        <Border 
+            CornerRadius="5" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            DockPanel.Dock="Top" 
+            Margin="20">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label HorizontalAlignment="Center" 
+                       TextBlock.TextAlignment="Center" 
+                       FontSize="72" 
+                       FontWeight="Bold" 
+                       Style="{StaticResource ClassHeader}"/>
+            <Button Command="{Binding GoToReadyForSelection}" Height="23"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                    ToolTip="Change Class" Visibility="{Binding IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource VisibleIfEnabledConverter}}">
+                <Image Source="/image/user_go.png"/>
+                </Button>
+                <ComboBox 
+                    ItemsSource="{Binding AllClasses}" 
+                    DisplayMemberPath="Name" 
+                    SelectedItem="{Binding CurrentClass}" 
+                    Width="Auto"
+                    Height="23">
+                    <ComboBox.Style>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectionMode}" Value="SelectionMade">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}" 
+                                        Value="0">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBlock>No classes found. Please use the Class Manager to add classes</TextBlock>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+            </StackPanel>
+    </Border>
+</UserControl>

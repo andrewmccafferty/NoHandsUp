@@ -1,0 +1,230 @@
+﻿<Window x:Class="Xerxes.NoHandsUp.UI.Management.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:model="clr-namespace:Xerxes.NoHandsUp.Model;assembly=Xerxes.NoHandsUp.Model"
+        xmlns:customcontrols="clr-namespace:Xerxes.WPFCustomControls;assembly=Xerxes.WPFCustomControls"
+        xmlns:attachedproperties="clr-namespace:Xerxes.WPFCustomControls.AttachedProperties;assembly=Xerxes.WPFCustomControls"
+        xmlns:localresources="clr-namespace:Xerxes.NoHandsUp.UI.Management.Properties"
+        xmlns:validation="clr-namespace:Xerxes.NoHandsUp.UI.Management.Validation"
+        xmlns:converters="clr-namespace:Xerxes.NoHandsUp.UI.Management.Converters"
+        xmlns:coreconverters="clr-namespace:Xerxes.WPFCustomControls.Converters;assembly=Xerxes.WPFCustomControls"
+        xmlns:wpftoolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit.Extended"
+        xmlns:coreView="clr-namespace:MVVm.Core.View;assembly=MVVm.Core"
+        Title="No Hands Up Class Management" Height="350" Width="525" x:Name="mainWindow" Closing="mainWindow_Closing">
+    <Window.Resources>
+        <coreconverters:ImageKeyConverter x:Key="ImageKeyConverter"/>
+        <Style x:Key="GlassButton" TargetType="{x:Type Button}">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder" 
+                  CornerRadius="15,15,15,15"
+                  BorderThickness="4,4,4,4" 
+                  Background="#AA000000"  
+                  BorderBrush="#99FFFFFF"
+                  RenderTransformOrigin="0.5,0.5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="1.7*"/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="0" CornerRadius="23,23,0,0">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                            <GradientStop Color="#08FFFFFF" Offset="0"/>
+                                            <GradientStop Color="#88FFFFFF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <ContentPresenter x:Name="ButtonContentPresenter"
+                                Margin="4"
+                                                  VerticalAlignment="Center"  
+                                Grid.RowSpan="2" 
+                                HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform" TargetName="ButtonBorder">
+                                    <Setter.Value>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                                        </TransformGroup>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <coreView:CommandReference x:Key="AddClass" Command="{Binding AddClass}"/>
+        <coreView:CommandReference x:Key="Save" Command="{Binding SaveClasses}"/>
+        <converters:ValidationErrorKeyConverter x:Key="ValidationErrorKeyConverter"/>
+        <converters:ClassExpandedConverter x:Key="ClassExpandedConverter"/>
+        <converters:VisibleIfLastConverter x:Key="VisibleIfLastConverter"/>
+        <!--<ImageBrush ImageSource="pack://application:,,,/Xerxes.NoHandsUp.UI.Management/component/people.png" x:Key="PeopleImage"/>-->
+        <ImageBrush ImageSource="/image/people.png" x:Key="PeopleImage"/>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+        Value="{Binding RelativeSource={RelativeSource Self},
+                        Path=(Validation.Errors), Converter={StaticResource ValidationErrorKeyConverter}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <DataTemplate DataType="{x:Type model:Pupil}" x:Key="PupilDetailTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}}"/>
+                <TextBox 
+                         Width="100"
+                         Text="{Binding Path=FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    GotFocus="txtClassName_GotFocus"
+                    KeyboardNavigation.TabNavigation="Cycle" attachedproperties:FocusExtension.IsFocused="{Binding HasFocus, Mode=TwoWay}"/>
+                <TextBox Text="{Binding Path=LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Width="100" 
+                         KeyboardNavigation.TabNavigation="Cycle"
+                         GotFocus="txtClassName_GotFocus"/>
+                <Label Content="{x:Static localresources:Resources.Level}"/>
+                <wpftoolkit:IntegerUpDown Value="{Binding Level, UpdateSourceTrigger=PropertyChanged}" 
+                                          PreviewTextInput="IntegerUpDown_PreviewTextInput" 
+                                          KeyboardNavigation.TabNavigation="Cycle" Maximum="5" Minimum="0"
+                                          GotFocus="txtClassName_GotFocus"/>
+                
+               
+                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ElementName=mainWindow, Path=DataContext.DeletePupilCommand}" 
+                        CommandParameter="{Binding}" KeyboardNavigation.TabNavigation="Cycle">
+                    <Image Source="/image/cross.png"/>
+                </Button>
+            </StackPanel>
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type model:Class}" ItemsSource="{Binding Pupils}"
+                                  x:Key="ClassListTemplate"
+                                  ItemTemplate="{StaticResource PupilDetailTemplate}">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Class:" Target="txtClassName"/>
+                    <TextBox x:Name="txtClassName" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}" Width="200" 
+                             attachedproperties:FocusExtension.IsFocused="{Binding HasFocus, Mode=TwoWay}" 
+                             GotFocus="txtClassName_GotFocus"/>
+                    <Button Command="{Binding ElementName=mainWindow, Path=DataContext.RemoveClass}" 
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                        <Image Source="/image/cross.png" Width="16" Height="16"/>
+                    </Button>
+                    <Button BorderThickness="0"  
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Command="{Binding ElementName=mainWindow, Path=DataContext.AddPupilToClass}" CommandParameter="{Binding}">
+                        <Image Source="/image/group_add.png"/>
+                    </Button>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <Binding Path="Pupils.Count" StringFormat="{}({0} pupil(s))"/>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+                
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <Style TargetType="{x:Type Image}" x:Key="toolbarImageStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Button}, AncestorLevel=1}, Path=IsEnabled}" Value="False">
+                    <Setter Property="Opacity" Value="0.25"></Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+S" Command="{StaticResource Save}"/>
+    </Window.InputBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0.75*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Save" Command="{Binding SaveClasses}">
+                    <MenuItem.Icon>
+                        <Image Source="/image/disk.png" Style="{StaticResource toolbarImageStyle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Exit" Click="OnCloseButtonClicked"/>
+            </MenuItem>
+        </Menu>
+        <ToolBarTray Grid.Row="1">
+            <ToolBar>
+                <Button Command="{Binding SaveClasses}" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" ToolTip="Save (Ctrl + S)">
+                    <Image Source="/image/disk.png" Style="{StaticResource toolbarImageStyle}">
+
+                    </Image>
+                </Button>
+                <Button Command="{Binding OpenFolder}" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" ToolTip="Open data file folder">
+                    <Image Source="/image/folder_explore.png"/>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding AddClass}" Grid.Row="1" Content="Add class with" Style="{StaticResource GlassButton}">
+            </Button>
+            <wpftoolkit:IntegerUpDown Value="{Binding PupilCountForNewClass}" PreviewTextInput="IntegerUpDown_PreviewTextInput"/>
+            <Label Content="Pupils"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <TextBlock>
+                <TextBlock.Text>
+                    <Binding Path="CurrentClass.Name" StringFormat="Selected Class: {0}"/>
+                </TextBlock.Text>
+            </TextBlock>
+            <Button BorderThickness="0"  
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        Command="{Binding ElementName=mainWindow, Path=DataContext.AddPupilToClass}" CommandParameter="{Binding CurrentClass}">
+                <Image Source="/image/group_add.png" Style="{StaticResource toolbarImageStyle}"/>
+            </Button>
+        </StackPanel>
+        <ScrollViewer Grid.Row="4">
+            <customcontrols:TreeViewWithFixedTabNavigation 
+                ItemsSource="{Binding ClassList.Classes}"
+                ItemTemplate="{StaticResource ClassListTemplate}" 
+                x:Name="listOfClasses"
+                ButtonBase.Click="Button_Click" 
+                KeyboardNavigation.TabNavigation="Contained" 
+                SelectedItemChanged="listOfClasses_SelectedItemChanged">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue"/>
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ClassList.Classes.Count}" Value="0">
+                                <Setter Property="TreeView.Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <TextBlock Text="No classes found" Background="White"  FontStyle="Italic" Padding="5"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.Style>
+                </customcontrols:TreeViewWithFixedTabNavigation>
+        </ScrollViewer>
+    </Grid>
+</Window>

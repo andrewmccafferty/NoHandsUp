@@ -1,0 +1,10 @@
+﻿<Window x:Class="Xerxes.WPFCustomControls.ErrorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Error In Application" Height="350" Width="525" x:Name="mainWindow" 
+Background="Transparent" WindowStyle="ToolWindow">
+    <StackPanel Orientation="Vertical">
+        <TextBlock TextWrapping="Wrap">Oh dear, this is embarrassing... Something's gone a bit pear-shaped. Please report the gory details below:</TextBlock>
+        <TextBlock Text=""/>
+    </StackPanel>
+</Window>
