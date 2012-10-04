@@ -62,7 +62,6 @@
     <Compile Include="ClassSelection.xaml.cs">
       <DependentUpon>ClassSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\ImageKeyConverter.cs" />
     <Compile Include="Messages\ClassSelected.cs" />
     <Compile Include="Messages\DataFileChanged.cs" />
     <Compile Include="Messages\PupilSelected.cs" />
@@ -138,7 +137,9 @@
       <Name>Xerxes.WPFCustomControls</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="image\user_go.png" />
   </ItemGroup>

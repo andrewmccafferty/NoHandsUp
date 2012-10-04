@@ -59,6 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xerxes.NoHandsUp.Common\Xerxes.NoHandsUp.Common.csproj">
+      <Project>{9DA1CBAE-C906-4FC9-90B5-A79C5046A8E0}</Project>
+      <Name>Xerxes.NoHandsUp.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

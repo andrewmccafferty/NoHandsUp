@@ -55,6 +55,7 @@ namespace Xerxes.NoHandsUp.Model
             this.FirstName = pupil.FirstName;
             this.LastName = pupil.LastName;
             this.Level = pupil.Level;
+            this.AvatarKey = pupil.AvatarKey;
         }
 
         public string FullName
@@ -73,7 +74,8 @@ namespace Xerxes.NoHandsUp.Model
             {
                 result = this.FirstName == pupil.FirstName &&
                         this.LastName == pupil.LastName &&
-                        this.Level == pupil.Level;
+                        this.Level == pupil.Level &&
+                        this.AvatarKey == pupil.AvatarKey;
             }
 
             return result;

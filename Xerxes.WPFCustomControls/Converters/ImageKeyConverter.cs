@@ -5,39 +5,49 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Data;
+using Xerxes.NoHandsUp.Common;
 
 namespace Xerxes.WPFCustomControls.Converters
 {
-    [ValueConversion(typeof(string), typeof(BitmapImage))]
-    public class ImageKeyConverter : IValueConverter
+    public enum MissingImageBehaviour
     {
-        private const string ImageFolder = "image/avatars";
+        None,
+        ShowDefault
+    }
+    [ValueConversion(typeof(string), typeof(string))]
+    public class ImageKeyConverter : IValueConverter
+    {        
+        private const string ImageFolder = "images/avatars";
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string imageKey = value as string;
-            if (imageKey == null)
-                return null;
-            string filePath = Path.Combine(ImageFolder, imageKey);
-            if (!File.Exists(filePath))
+            MissingImageBehaviour missingImageBehaviour = MissingImageBehaviour.None;
+            if (parameter != null)
             {
-                return null;
+                missingImageBehaviour = (MissingImageBehaviour)Enum.Parse(typeof(MissingImageBehaviour), parameter.ToString());
+            }
+            string defaultPath = Path.Combine(FilePaths.ExecutingDirectory, @"image/user_gray.png");
+            if (imageKey == null)
+            {
+                return missingImageBehaviour == MissingImageBehaviour.ShowDefault ? defaultPath : null;
+            }
+            string filePath = Path.Combine(FilePaths.AvatarsFolder, imageKey);
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            else if (missingImageBehaviour == MissingImageBehaviour.ShowDefault)
+            {
+                return defaultPath;
             }
             else
             {
-                var source = new BitmapImage();
-                source.BeginInit();
-                using (FileStream stream = new FileStream(filePath, FileMode.Open))
-                {
-                    source.StreamSource = stream;
-                    source.EndInit();
-                }
-
-                return source;
+                return null;
             }
-
         }
 
+        
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();

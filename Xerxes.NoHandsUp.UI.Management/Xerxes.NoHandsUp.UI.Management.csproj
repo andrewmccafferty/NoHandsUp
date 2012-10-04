@@ -124,6 +124,10 @@
       <Project>{B289500A-5AC3-4FF8-9F48-C76DC36D899C}</Project>
       <Name>MVVm.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Xerxes.NoHandsUp.Common\Xerxes.NoHandsUp.Common.csproj">
+      <Project>{9DA1CBAE-C906-4FC9-90B5-A79C5046A8E0}</Project>
+      <Name>Xerxes.NoHandsUp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xerxes.NoHandsUp.DAL\Xerxes.NoHandsUp.Model.csproj">
       <Project>{6F73A0DA-5BC7-42F8-8CF3-0F580AC0A821}</Project>
       <Name>Xerxes.NoHandsUp.Model</Name>
@@ -166,6 +170,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="people.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="image\user_gray.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

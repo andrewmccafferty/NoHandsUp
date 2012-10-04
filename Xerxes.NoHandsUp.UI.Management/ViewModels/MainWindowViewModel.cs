@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows;
+using Xerxes.NoHandsUp.Common;
+using Microsoft.Win32;
 
 namespace Xerxes.NoHandsUp.UI.Management.ViewModels
 {
@@ -105,11 +107,30 @@ namespace Xerxes.NoHandsUp.UI.Management.ViewModels
                 return new RelayCommand(
                     () =>
                     {
-                        Process.Start(provider.GetDataFolder());
+                        Process.Start(FilePaths.DataFolder);
                     });
             }
         }
 
+        public ICommand ChangePupilAvatar
+        {
+            get
+            {
+                return new RelayCommand<Pupil>(p =>
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    bool? result = openFileDialog.ShowDialog();
+                    if (result.HasValue && result.Value)
+                    {
+                        string filePath = openFileDialog.FileName;
+                        string fileName = Path.GetFileName(filePath);
+                        File.Copy(filePath, Path.Combine(FilePaths.AvatarsFolder, fileName), true);
+                        p.AvatarKey = fileName;
+                    }
+                    
+                });
+            }
+        }
         private ICommand removeClass;
         public ICommand RemoveClass
         {

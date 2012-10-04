@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Xerxes.NoHandsUp.Common\Xerxes.NoHandsUp.Common.csproj">
+      <Project>{9DA1CBAE-C906-4FC9-90B5-A79C5046A8E0}</Project>
+      <Name>Xerxes.NoHandsUp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xerxes.NoHandsUp.DAL\Xerxes.NoHandsUp.Model.csproj">
       <Project>{6F73A0DA-5BC7-42F8-8CF3-0F580AC0A821}</Project>
       <Name>Xerxes.NoHandsUp.Model</Name>

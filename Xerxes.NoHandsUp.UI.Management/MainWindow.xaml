@@ -79,7 +79,10 @@
         
         <DataTemplate DataType="{x:Type model:Pupil}" x:Key="PupilDetailTemplate">
             <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}}"/>
+                <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ElementName=mainWindow, Path=DataContext.ChangePupilAvatar}" 
+                        CommandParameter="{Binding}" KeyboardNavigation.TabNavigation="Cycle">
+                    <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}, ConverterParameter=ShowDefault}" Height="30"/>
+                </Button>
                 <TextBox 
                          Width="100"
                          Text="{Binding Path=FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"

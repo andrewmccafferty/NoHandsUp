@@ -47,7 +47,11 @@
                 <Border.Background>
                     <SolidColorBrush x:Name="BorderBrush" Color="Black" />
                 </Border.Background>
-                <TextBlock Text="{Binding Path=FullName}" Style="{StaticResource SelectedPupilStyle}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding AvatarKey, Converter={StaticResource ImageKeyConverter}}"/>
+                    <TextBlock Text="{Binding Path=FullName}" Style="{StaticResource SelectedPupilStyle}"/>
+                </StackPanel>
+                
                 <Border.RenderTransform>
                     <ScaleTransform  CenterX="100" CenterY="25" ScaleX="1" ScaleY="1" x:Name="Scaling"/>
                 </Border.RenderTransform>
