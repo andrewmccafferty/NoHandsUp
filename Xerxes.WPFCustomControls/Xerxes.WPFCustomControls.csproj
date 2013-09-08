@@ -46,6 +46,7 @@
     <Compile Include="AttachedProperties\FocusExtension.cs" />
     <Compile Include="Converters\ImageKeyConverter.cs" />
     <Compile Include="Converters\VisibleIfEnabledConverter.cs" />
+    <Compile Include="Converters\VisibleIfNotNullConverter.cs" />
     <Compile Include="ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>

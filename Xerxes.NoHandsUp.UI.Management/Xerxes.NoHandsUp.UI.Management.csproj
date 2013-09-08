@@ -65,6 +65,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AvatarSelection.xaml.cs">
+      <DependentUpon>AvatarSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\VisibleIfLastConverter.cs" />
     <Compile Include="Converters\ClassExpandedConverter.cs" />
     <Compile Include="Converters\ValidationErrorKeyConverter.cs" />
@@ -78,6 +81,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Page Include="AvatarSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

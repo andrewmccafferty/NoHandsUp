@@ -39,6 +39,13 @@ namespace Xerxes.NoHandsUp.UI.ViewModels
             }
         }
 
+        public double SelectedPupilScaleFactor
+        {
+            get
+            {
+                return 10;
+            }
+        }
         private Class pupilClass;
         
         public Class PupilClass

@@ -18,6 +18,10 @@ namespace Xerxes.NoHandsUp.Common
             get
             {
                 string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), XmlDataFolder);
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
                 return folder;
             }
         }
@@ -26,7 +30,12 @@ namespace Xerxes.NoHandsUp.Common
         {
             get
             {
-                return Path.Combine(DataFolder, "images/avatars");
+                string folder = Path.Combine(Path.Combine(DataFolder, "images"), "avatars");
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+                return folder;
             }
         }
 

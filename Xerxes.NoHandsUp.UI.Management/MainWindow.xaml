@@ -13,6 +13,7 @@
         Title="No Hands Up Class Management" Height="350" Width="525" x:Name="mainWindow" Closing="mainWindow_Closing">
     <Window.Resources>
         <coreconverters:ImageKeyConverter x:Key="ImageKeyConverter"/>
+        <coreconverters:VisibleIfNotNullConverter x:Key="VisibleIfNotNullConverter"/>
         <Style x:Key="GlassButton" TargetType="{x:Type Button}">
             <Setter Property="FontSize" Value="15" />
             <Setter Property="Foreground" Value="White" />
@@ -65,6 +66,7 @@
         <converters:ValidationErrorKeyConverter x:Key="ValidationErrorKeyConverter"/>
         <converters:ClassExpandedConverter x:Key="ClassExpandedConverter"/>
         <converters:VisibleIfLastConverter x:Key="VisibleIfLastConverter"/>
+        
         <!--<ImageBrush ImageSource="pack://application:,,,/Xerxes.NoHandsUp.UI.Management/component/people.png" x:Key="PeopleImage"/>-->
         <ImageBrush ImageSource="/image/people.png" x:Key="PeopleImage"/>
         <Style TargetType="TextBox">
@@ -81,7 +83,17 @@
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ElementName=mainWindow, Path=DataContext.ChangePupilAvatar}" 
                         CommandParameter="{Binding}" KeyboardNavigation.TabNavigation="Cycle">
-                    <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}, ConverterParameter=ShowDefault}" Height="30"/>
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}, ConverterParameter=ShowDefault}" Height="30"/>
+                        <Button Command="{Binding ElementName=mainWindow, Path=DataContext.DeletePupilAvatar}" 
+                            CommandParameter="{Binding}"
+                                Visibility="{Binding Path=AvatarKey, Converter={StaticResource VisibleIfNotNullConverter}}"
+                            
+                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <Image Source="/image/cross.png" Width="16" Height="16"/>
+                        </Button>
+                    </StackPanel>
+                    
                 </Button>
                 <TextBox 
                          Width="100"

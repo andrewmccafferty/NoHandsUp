@@ -126,11 +126,31 @@ namespace Xerxes.NoHandsUp.UI.Management.ViewModels
                         string fileName = Path.GetFileName(filePath);
                         File.Copy(filePath, Path.Combine(FilePaths.AvatarsFolder, fileName), true);
                         p.AvatarKey = fileName;
+                        p.Notify("AvatarKey");
                     }
                     
                 });
             }
         }
+        private ICommand deletePupilAvatar;
+
+        public ICommand DeletePupilAvatar
+        {
+            get
+            {
+                if (this.deletePupilAvatar == null)
+                {
+                    this.deletePupilAvatar = new RelayCommand<Pupil>(p =>
+                    {
+                        p.AvatarKey = null;
+                        p.Notify("AvatarKey");
+                    });
+                }
+
+                return this.deletePupilAvatar;
+            }
+        }
+
         private ICommand removeClass;
         public ICommand RemoveClass
         {
