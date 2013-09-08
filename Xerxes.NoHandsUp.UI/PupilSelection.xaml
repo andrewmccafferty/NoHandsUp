@@ -15,17 +15,20 @@
         <coreView:CommandReference x:Key="selectPupil" Command="{Binding SelectPupil}"/>
         <coreView:CommandReference x:Key="resetPupilSelection" Command="{Binding ResetPupilSelection}"/>
         <coreconverters:ImageKeyConverter x:Key="ImageKeyConverter"/>
-        
+        <coreconverters:HalfValueConverter x:Key="HalfValue" />
+        <coreconverters:VisibleIfNotNullConverter x:Key="VisibleIfNotNull"/>
+        <coreconverters:NullToBooleanConverter x:Key="NullToBoolean"/>
         <!-- End of command references-->
         <Style TargetType="{x:Type TextBlock}" x:Key="PupilStyle">
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="5"/>
-            <Setter Property="Background" Value="Transparent"/>
         </Style>
-        <Style TargetType="{x:Type TextBlock}" x:Key="SelectedPupilStyle" BasedOn="{StaticResource PupilStyle}">
+        <Style TargetType="{x:Type TextBlock}" x:Key="SelectedPupilStyle" 
+                BasedOn="{StaticResource PupilStyle}">
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Black"/>
         </Style>
         <DataTemplate x:Key="pupilTemplate">
             <Border Margin="5" 
@@ -37,7 +40,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock 
                     Style="{StaticResource PupilStyle}"
-                    Text="{Binding Path=FullName}" />
+                    Text="{Binding Path=FullName}"></TextBlock>
                 </StackPanel>
                 
             </Border>
@@ -47,60 +50,28 @@
                 <Border.Background>
                     <SolidColorBrush x:Name="BorderBrush" Color="Black" />
                 </Border.Background>
-                <Viewbox>
+                <Viewbox Opacity="1">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{Binding Path=AvatarKey, Converter={StaticResource ImageKeyConverter}, ConverterParameter=None}" Height="30"/>
-                    <TextBlock Text="{Binding Path=FullName}" Style="{StaticResource SelectedPupilStyle}"/>
-                </StackPanel>
+                        <Image Source="{Binding Path=AvatarKey, 
+                                        Converter={StaticResource ImageKeyConverter}, 
+                                        ConverterParameter=None}" 
+                           Height="30">
+
+                        </Image>
+                        <TextBlock Text="{Binding Path=FullName}" 
+                                    Style="{StaticResource SelectedPupilStyle}" 
+                                   >
+                        </TextBlock>
+                    </StackPanel>
                 </Viewbox>
-                <Border.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform  CenterX="100" CenterY="25" ScaleX="1" ScaleY="1" x:Name="Scaling"/>
-                        <TranslateTransform X="0" Y="0"  x:Name="Translation"></TranslateTransform>
-                        
-                    </TransformGroup>                    
-                </Border.RenderTransform>
             </Border>
-            <DataTemplate.Triggers>
-                <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="SelectedPupilBorder">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetName="Scaling" 
-                                Storyboard.TargetProperty="ScaleX"
-                                From="0.5"
-                                To="2" 
-                                Duration="0:0:0.5"/>
-                            <DoubleAnimation
-                                Storyboard.TargetName="Scaling" 
-                                Storyboard.TargetProperty="ScaleY"
-                                From="1"
-                                To="2"
-                                Duration="0:0:0.5"
-                                />
-                            <DoubleAnimation
-                                Storyboard.TargetName="SelectedPupilBorder"
-                                Storyboard.TargetProperty="Opacity"
-                                From="0"
-                                To="1"
-                                Duration="0:0:0.5"
-                                />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </DataTemplate.Triggers>
         </DataTemplate>
         <Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
-            <Setter Property="Opacity" Value="0.5"/>
             <Setter Property="ContentTemplate" Value="{StaticResource pupilTemplate}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding DataContext.SelectedPupil, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" Value="{x:Null}">
                     <Setter Property="Opacity" Value="1"/>
                 </DataTrigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="ContentTemplate" Value="{StaticResource selectedPupilTemplate}" />
-                    <Setter Property="Opacity" Value="1"/>
-                </Trigger>
             </Style.Triggers>
             <Style.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
@@ -123,9 +94,61 @@
         <KeyBinding Gesture="Alt+R" Command="{StaticResource resetPupilSelection}"/>
         <KeyBinding Key="Esc" Command="{StaticResource resetPupilSelection}"/>
     </UserControl.InputBindings>
-    
-    <DockPanel VerticalAlignment="Top">
-        <ListBox 
+        <Canvas Height="200" Width="1110" x:Name="canvas">
+        <ContentControl Content="{Binding SelectedPupil}" x:Name="selectedPupilDisplayElement">
+            <ContentControl.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform  CenterX="100" CenterY="25" ScaleX="1" ScaleY="1" x:Name="Scaling"/>
+                    <TranslateTransform X="0" Y="0"  x:Name="Translation"></TranslateTransform>
+                </TransformGroup>
+            </ContentControl.RenderTransform>
+            <ContentControl.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedPupil, Converter={StaticResource NullToBoolean}}" Value="True">
+                            <Setter Property="ContentControl.ContentTemplate" 
+                                    Value="{StaticResource selectedPupilTemplate}" />
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard >
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                Storyboard.Target="{Binding TemplatedParent}"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                From="0.5"
+                                To="5" 
+                                Duration="0:0:0.5"/>
+                                        <DoubleAnimation
+                                Storyboard.Target="{Binding TemplatedParent}"
+                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                From="1"
+                                To="5"
+                                Duration="0:0:0.5"
+                                />
+                                        
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+            <Canvas.Left>
+                <MultiBinding Converter="{StaticResource HalfValue}">
+                    <Binding ElementName="canvas" Path="ActualWidth" />
+                    <Binding ElementName="selectedPupilDisplayElement" Path="ActualWidth" />
+                </MultiBinding>
+            </Canvas.Left>
+            <Canvas.Top>
+                <MultiBinding Converter="{StaticResource HalfValue}">
+                    <Binding ElementName="canvas" Path="ActualHeight" />
+                    <Binding ElementName="selectedPupilDisplayElement" Path="ActualHeight" />
+                </MultiBinding>
+            </Canvas.Top>
+        </ContentControl>
+            <ListBox 
+                
+                Canvas.Top="0"
+                Canvas.Left="0"
            FocusVisualStyle= "{x:Null}" 
             DockPanel.Dock="Bottom"
             VerticalAlignment="Top"
@@ -133,15 +156,13 @@
             ItemsSource="{Binding PupilClass.Pupils}" 
                  ItemContainerStyle="{StaticResource ContainerStyle}"
                  Template="{StaticResource pupilList}"
-                 SelectedItem="{Binding SelectedPupil, UpdateSourceTrigger=PropertyChanged}"
-            Margin="100"
             Name="pupilList">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" IsItemsHost="True" Width="1110">
-                    </WrapPanel>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
-    </DockPanel>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" IsItemsHost="True" Width="1110">
+                        </WrapPanel>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </Canvas>
 </UserControl>

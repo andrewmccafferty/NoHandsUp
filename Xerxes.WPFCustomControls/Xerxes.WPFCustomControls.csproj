@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttachedProperties\FocusExtension.cs" />
+    <Compile Include="Converters\HalfValueConverter.cs" />
     <Compile Include="Converters\ImageKeyConverter.cs" />
+    <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\VisibleIfEnabledConverter.cs" />
     <Compile Include="Converters\VisibleIfNotNullConverter.cs" />
     <Compile Include="ErrorDialog.xaml.cs">
